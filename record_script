@@ -1,0 +1,2 @@
+rosbag record /usb_cam1/image_raw/compressed /usb_cam2/image_raw/compressed /camera/color/image_raw/compressed /user_rating /error_log /audio/audio
+

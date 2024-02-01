@@ -1,0 +1,24 @@
+<launch>
+
+ 
+
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam1/image_raw/"/>
+     <param name="image_transport" value="compressed" />
+    <param name="autosize" value="true" />
+  </node>
+
+ <node name="image_view2" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam2/image_raw/"/>
+    <param name="image_transport" value="compressed" />
+    <param name="autosize" value="true" />
+  </node>
+
+ <node name="image_view3" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam3/image_raw/"/>
+    <param name="image_transport" value="compressed" />
+    <param name="autosize" value="true" />
+  </node>
+
+  
+</launch>

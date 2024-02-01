@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="action_log" pkg="multicam" type="action_log.py" >
+  </node>
+</launch>

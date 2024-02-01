@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="gui" pkg="multicam" type="gui.py" >
+  </node>
+</launch>

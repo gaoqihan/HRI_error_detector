@@ -21,7 +21,6 @@ class VideoDisplay:
         self.error_pub=rospy.Publisher("/error_log",String)
         self.error_display_pub=rospy.Publisher("/error_display",String)
         self.error_index_pub=rospy.Publisher('/error_index', Int32)
-        self.task_index_pub=rospy.Publisher('/task_index', Int32)
 
         # Add a publisher for the /note topic
         self.note_pub = rospy.Publisher("/note", String, queue_size=10)
@@ -80,12 +79,6 @@ class VideoDisplay:
         self.B.grid(row=12,column=22,columnspan=10,sticky=(N,W))
         self.B_unintended_error.grid(row=14,column=22,columnspan=10,sticky=(N,W))
         self.B_next_sequence.grid(row=16,column=22,columnspan=10,sticky=(N,W))
-        # Create a Text Entry widget for the error sequence
-        self.error_entry = tk.Entry(root)
-        self.error_entry.grid(row=17, column=0, columnspan=10, sticky=(W, S, E, N), pady=2)
-        # Create a Button widget to submit the error sequence
-        self.submit_button = tk.Button(root, text="Submit", command=self.submit_error_sequence)
-        self.submit_button.grid(row=17, column=11, columnspan=10, sticky=(W, S, E, N), pady=2)
 
         # Pack labels to the window
 
@@ -115,33 +108,19 @@ class VideoDisplay:
 
         self.error_dict = {
             0: "No Error",
-            1: "Moving too slow",
-            2: "Moving too fast",
-            3: "Spacial Error",
-            4: "Orientation Error",
-            5: "unintented error"
-            #spcaial error
-            #orientation of object
-            #speed
-            #hand preference
-            #wrong drop height
+            1: "Delayed response",
+            2: "Moving too slow",
+            3: "Inappropriate placement",
+            4: "Not release",
+            5: "Stutter motion",
+            6: "Non-optimal motion path",
+            7: "unintented error"
         }
-        self.error_sequence_pool=[[0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                            [0, 0, 2, 4, 3, 0, 0, 1, 0, 4, 0, 0, 0, 3, 2, 1, 0, 1, 4, 2, 3, 0, 0, 0, 0, 2, 0, 4, 1, 3, 0, 0],
-                            [0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        self.error_sequence_pool=[[0, 0, 0, 1, 0, 4, 0, 6, 0, 2, 0, 0, 0, 0, 3, 5, 0, 0, 6, 0, 0, 0, 0, 0, 4, 1, 0, 3, 0, 5, 0, 0, 0, 0, 2, 0],
+                            [6, 0, 4, 0, 2, 0, 0, 3, 0, 1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 5, 0, 3, 0, 6, 0, 0, 2, 0, 0, 0],
+                            [0, 4, 0, 0, 6, 0, 0, 0, 5, 0, 2, 3, 0, 0, 0, 0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 5, 0, 0, 0, 2, 0, 6, 0, 4]
                             ]
         self.error_sequence=self.error_sequence_pool[self.task_index]
-    
-    def submit_error_sequence(self):
-        # Get the number from the entry box
-        error_number = int(self.error_entry.get())
-        # Set the error sequence at the current index
-        self.error_sequence[self.cnt] = error_number
-        print(self.error_sequence)
-        # Increment the counter
-        # Clear the entry box
-        self.error_entry.delete(0, tk.END)
-        self.error_command()
     def callback_cam1(self, data):
         img = self.cv_bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
         img = cv2.resize(img, (192,144), interpolation = cv2.INTER_NEAREST)
@@ -232,7 +211,6 @@ class VideoDisplay:
         self.root.mainloop()
 
     def error_command(self):
-        self.error_type=self.error_dict[self.error_sequence[self.cnt]]
         if self.state==0:
             self.error_pub.publish("START,"+self.error_type)  
             self.B.config(text="Click to END interaction")
@@ -286,7 +264,6 @@ class VideoDisplay:
         self.B.config(text="Click to START interaction")
         self.B_unintended_error.config(text="Click to START recording Unintended Error")
         self.B_next_sequence.config(text="Click for next task, Current:{}".format(self.task_index+1))
-        self.task_index_pub.publish(self.task_index)
 
 
 if __name__ == '__main__':

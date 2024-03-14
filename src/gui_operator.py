@@ -25,7 +25,7 @@ class VideoDisplay:
         # Define text message subscriber
         self.sub_message = rospy.Subscriber('/error_display', String, self.callback_message)
         self.sub_error_index = rospy.Subscriber('/error_index', Int32, self.callback_index)
-
+        self.sub_task_index = rospy.Subscriber('/task_index', Int32, self.callback_task_index)
         # Define error message subscriber
         self.sub_robot_error=rospy.Subscriber('/franka_state_controller/franka_states',
                                                   FrankaState, self.error_callback, queue_size=1)
@@ -69,19 +69,18 @@ class VideoDisplay:
 
         self.error_dict = {
             0: "No Error",
-            1: "Delayed response",
-            2: "Random movement",
-            3: "Abnormal suggestions",
-            4: "Moving too slow",
-            5: "Inappropriate placement",
-            6: "Not release",
-            7: "Hesitation",
-            8: "Stutter motion",
-            9: "Freeze in motion",
-            10: "Non-optimal motion path"
+            1: "Moving too slow",
+            2: "Moving too fast",
+            3: "Spacial Error",
+            4: "Orientation Error", 
+            5: "unintented error"
         }
-        self.error_sequence=[0, 0, 0, 0, 4, 0, 8, 10, 0, 6, 0, 0, 0, 0, 9, 2, 0, 3, 0, 0, 0, 1, 0, 0, 0, 7, 0, 0, 5, 0, 9, 6, 7, 0, 8, 0, 0, 0, 1, 0, 0, 0, 0, 0, 5, 0, 0, 0, 2, 0, 10, 0, 4, 0, 0, 0, 0, 0, 3, 0, 4, 0, 0, 3, 0, 0, 0, 0, 0, 0, 9, 0, 6, 0, 0, 0, 2, 8, 0, 7, 10, 0, 0, 5, 0, 0, 0, 1, 0, 0]
-
+        self.task_index=0
+        self.error_sequence_pool=[[0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0, 0, 2, 4, 3, 0, 0, 1, 0, 4, 0, 0, 0, 3, 2, 1, 0, 1, 4, 2, 3, 0, 0, 0, 0, 2, 0, 4, 1, 3, 0, 0],
+                            [0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+                            ]
+        self.error_sequence=self.error_sequence_pool[self.task_index]
     def callback_cam1(self, data):
         img = self.cv_bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
         #img = cv2.resize(img, (400, 300), interpolation = cv2.INTER_NEAREST)
@@ -119,11 +118,19 @@ class VideoDisplay:
         self.future_list_1.configure(text="1: {}".format(self.error_dict[self.error_sequence[data.data + 1]]))
         self.future_list_2.configure(text="2: {}".format(self.error_dict[self.error_sequence[data.data + 2]]))
         self.future_list_3.configure(text="3: {}".format(self.error_dict[self.error_sequence[data.data + 3]]))
+    
 
     def error_callback(self,data):
         #print(data.robot_mode)
         self.robot_error.configure(text="{}".format(data.robot_mode))
+    def callback_task_index(self,data):
+        self.task_index=data.data
+        self.error_sequence=self.error_sequence_pool[self.task_index]
+        print(self.error_sequence)
 
+        self.future_list_1.configure(text="1: {}".format(self.error_dict[self.error_sequence[1]]))
+        self.future_list_2.configure(text="2: {}".format(self.error_dict[self.error_sequence[2]]))
+        self.future_list_3.configure(text="3: {}".format(self.error_dict[self.error_sequence[3]]))
 
     def convert_to_tkinter_image(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

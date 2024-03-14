@@ -5,7 +5,7 @@ import random
 error_rate=0.30
 
 sequence=[]
-x=[1]*6+[0]*12
+x=[1]*8+[0]*8
 for cnt in range(2):
     random.shuffle(x)
     sequence+=x
@@ -14,8 +14,8 @@ print(sequence)
 error_set=[]
 error_sequence=[]
 
-x=list(range(1,7))
-for i in range(3):
+x=list(range(1,5))
+for i in range(10):
     random.shuffle(x)
     error_set+=x
 for i in range(len(sequence)):

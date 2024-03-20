@@ -3,10 +3,12 @@
     <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="1280" />
     <param name="image_height" value="720" />
+    <param name='framerate' value='60' />
     <param name="pixel_format" value="mjpeg" />
     <param name="color_format" value="yuv422p" />
     <param name="camera_frame_id" value="usb_cam1" />
     <param name="io_method" value="mmap"/>
+    
   </node>
  
   <node name="usb_cam2" pkg="usb_cam" type="usb_cam_node" output="screen" >
@@ -16,6 +18,8 @@
     <param name="pixel_format" value="mjpeg" />
     <param name="color_format" value="yuv422p" />
     <param name="camera_frame_id" value="usb_cam2" />
+    <param name='framerate' value='50' />
+
     <param name="io_method" value="mmap"/>
   </node>
 
@@ -190,28 +194,64 @@
   </node>
 
  <node name="image_view3" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/usb_cam3/image_raw"/>
+    <remap from="image" to="/camera/color/image_raw"/>
     <param name="autosize" value="true" />
   </node>
 
 
 
   <arg name="dst" default="appsink"/>
-  <arg name="device" default=""/>
+  <arg name="device_1" default="plughw:1,0"/>
+  <arg name="device_2" default="plughw:3,0"/>
+  <arg name="device_3" default="plughw:4,0"/>
+
+
   <arg name="format" default="mp3"/>
   <arg name="bitrate" default="128"/>
   <arg name="channels" default="1"/>
   <arg name="depth" default="16"/>
   <arg name="sample_rate" default="16000"/>
   <arg name="sample_format" default="S16LE"/>
-  <arg name="ns" default="audio"/>
+  <arg name="ns_1" default="audio_1"/>
+  <arg name="ns_2" default="audio_2"/>
+  <arg name="ns_3" default="audio_3"/>
+
   <arg name="audio_topic" default="audio"/>
 
-  <group ns="$(arg ns)">
+  <group ns="$(arg ns_1)">
     <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
       <remap from="audio" to="$(arg audio_topic)" />
       <param name="dst" value="$(arg dst)"/>
-      <param name="device" value="$(arg device)"/>
+      <param name="device" value="$(arg device_1)"/>
+      <param name="format" value="$(arg format)"/>
+      <param name="bitrate" value="$(arg bitrate)"/>
+      <param name="channels" value="$(arg channels)"/>
+      <param name="depth" value="$(arg depth)"/>
+      <param name="sample_rate" value="$(arg sample_rate)"/>
+      <param name="sample_format" value="$(arg sample_format)"/>
+    </node>
+  </group>
+
+
+  <group ns="$(arg ns_2)">
+    <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+      <remap from="audio" to="$(arg audio_topic)" />
+      <param name="dst" value="$(arg dst)"/>
+      <param name="device" value="$(arg device_2)"/>
+      <param name="format" value="$(arg format)"/>
+      <param name="bitrate" value="$(arg bitrate)"/>
+      <param name="channels" value="$(arg channels)"/>
+      <param name="depth" value="$(arg depth)"/>
+      <param name="sample_rate" value="$(arg sample_rate)"/>
+      <param name="sample_format" value="$(arg sample_format)"/>
+    </node>
+  </group>
+
+  <group ns="$(arg ns_3)">
+    <node name="audio_capture" pkg="audio_capture" type="audio_capture" output="screen">
+      <remap from="audio" to="$(arg audio_topic)" />
+      <param name="dst" value="$(arg dst)"/>
+      <param name="device" value="$(arg device_3)"/>
       <param name="format" value="$(arg format)"/>
       <param name="bitrate" value="$(arg bitrate)"/>
       <param name="channels" value="$(arg channels)"/>

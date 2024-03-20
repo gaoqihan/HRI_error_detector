@@ -11,7 +11,10 @@ import subprocess
 
 
 # Define the rosbag file path
-rosbag_file_path = "/media/qihan/CORSAIR/Test/Data/User_3/3_1.bag"
+user_number=3
+task_number=3
+rosbag_file_path = f"/media/qihan/CORSAIR/Test/Data/User_3/{str(user_number)}_{str(task_number)}.bag"
+
 
 # Initialize the ROS node
 rospy.init_node('manual_marker')
@@ -242,19 +245,19 @@ def add_to_catalog(error_type, start_time, end_time, index,sub_rosbag_paths):
     end_time = end_time.to_sec() if end_time else None
 
     catalog_entry = {
-        "index": index,
+        "index": f"{str(user_number)}_{str(task_number)}_{str(index)}",
         "error_type": error_type,
         "start_time": start_time,
         "end_time": end_time,
         "subfolder_paths": {
-            "video_1": sub_rosbag_paths["video_1"],
-            "video_2": sub_rosbag_paths["video_2"],
-            "video_3": sub_rosbag_paths["video_3"],
-            "audio": sub_rosbag_paths["audio"],
-            "ee_pose": sub_rosbag_paths["ee_pose"],
-            "error_log": sub_rosbag_paths["error_log"],
-            "robot_state": sub_rosbag_paths["robot_state"],
-            "gripper_state": sub_rosbag_paths["gripper_state"]
+            "video_1": "./video_1",
+            "video_2": "./video_2",
+            "video_3": "./video_3",
+            "audio": "./audio",
+            "ee_pose": "./ee_pose",
+            "error_log": "./error_log",
+            "robot_state": "./robot_state",
+            "gripper_state": "./gripper_state"
 
         }
     }

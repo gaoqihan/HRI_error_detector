@@ -1,7 +1,7 @@
 <launch>
   
   <node name="rosbag_record" pkg="multicam" type="rosbag_record.py">
-    <param name="record_folder" value="/media/qihan/CORSAIR/Pilot_Nov_30" />
+    <param name="record_folder" value="/media/qihan/CORSAIR/Test"/>
     <param name="record_script" value="/home/qihan/catkin_ws/src/multicam/record_script" />
   </node>
 </launch>

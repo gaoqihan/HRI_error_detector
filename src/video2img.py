@@ -39,4 +39,4 @@ def convert_videos_to_images(input_folder, output_folder, frame_rate=30):
         os.rmdir(video_output_folder)  # Delete the video_output_folder after extracting frames
         
 
-convert_videos_to_images('/media/qihan/CORSAIR/Test/Data/User_3/video_3', '/media/qihan/CORSAIR/Test/Data/User_3/video_3', 1)
+convert_videos_to_images('/media/qihan/CORSAIR/Test/Data/User_3/video_2', '/media/qihan/CORSAIR/Test/Data/User_3/video_2', 3)

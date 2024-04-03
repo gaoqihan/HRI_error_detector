@@ -11,9 +11,9 @@ import subprocess
 
 
 # Define the rosbag file path
-user_number=3
+user_number=4
 task_number=3
-rosbag_file_path = f"/media/qihan/CORSAIR/Test/Data/User_3/{str(user_number)}_{str(task_number)}.bag"
+rosbag_file_path = f"/home/qihan/Playground/Data/User_{str(user_number)}/{str(user_number)}_{str(task_number)}.bag"
 
 
 # Initialize the ROS node
@@ -35,12 +35,15 @@ def end_clicked():
     global end_time, indicator_label
     end_time = time
     print("End button clicked!")
+    print(end_time)
     error_type = show_error_selection_popup()
     if error_type is not None:
         create_rosbag(error_type)
         print("Saved")
         indicator_label.config(bg="green")  # Set indicator color to green
         window.after(500, lambda: indicator_label.config(bg="blue"))  # Set indicator color to blue after 0.5 seconds
+        subprocess.run(["mpg123", "/home/qihan/Playground/notifications-sound-127856.mp3"])
+
     else:
         print("Error type not selected.")
     print(end_time)
